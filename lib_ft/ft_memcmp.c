@@ -1,32 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_memcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/04 18:16:16 by itykhono          #+#    #+#             */
-/*   Updated: 2024/05/05 21:54:54 by itykhono         ###   ########.fr       */
+/*   Created: 2024/03/08 13:51:01 by itykhono          #+#    #+#             */
+/*   Updated: 2024/03/18 21:00:43 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-# include <unistd.h>
-# include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <fcntl.h>
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
+{
+	const unsigned char	*ss1;
+	const unsigned char	*ss2;
+	size_t				i;
 
-
-# include "./lib_ft/libft.h"
-
-void	ft_print_err(int err_code);
-void	ft_print(char *str);
-void	jtest(void);
-
-int	ft_validate_cmd_syntax(char **argv);
-
-
-# endif
+	i = 0;
+	ss1 = (const unsigned char *)s1;
+	ss2 = (const unsigned char *)s2;
+	while (i < n)
+	{
+		if (ss1[i] != ss2[i])
+			return (ss1[i] - ss2[i]);
+		i++;
+	}
+	return (0);
+}

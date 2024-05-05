@@ -1,32 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/04 18:16:16 by itykhono          #+#    #+#             */
-/*   Updated: 2024/05/05 21:54:54 by itykhono         ###   ########.fr       */
+/*   Created: 2024/02/28 19:37:19 by itykhono          #+#    #+#             */
+/*   Updated: 2024/03/20 13:45:51 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-# include <unistd.h>
-# include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <fcntl.h>
+void	ft_bzero(void *s, size_t n)
+{
+	size_t	i;
+	char	*casted;
 
-
-# include "./lib_ft/libft.h"
-
-void	ft_print_err(int err_code);
-void	ft_print(char *str);
-void	jtest(void);
-
-int	ft_validate_cmd_syntax(char **argv);
-
-
-# endif
+	i = 0;
+	casted = (char *)s;
+	while (i < n)
+	{
+		casted[i] = '\0';
+		i++;
+	}
+}

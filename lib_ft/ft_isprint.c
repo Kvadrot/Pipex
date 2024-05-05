@@ -1,32 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_isprint.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/04 18:16:16 by itykhono          #+#    #+#             */
-/*   Updated: 2024/05/05 21:54:54 by itykhono         ###   ########.fr       */
+/*   Created: 2024/02/28 17:31:30 by itykhono          #+#    #+#             */
+/*   Updated: 2024/03/20 13:45:38 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
-
-# include <unistd.h>
-# include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <fcntl.h>
-
-
-# include "./lib_ft/libft.h"
-
-void	ft_print_err(int err_code);
-void	ft_print(char *str);
-void	jtest(void);
-
-int	ft_validate_cmd_syntax(char **argv);
-
-
-# endif
+int	ft_isprint(int c)
+{
+	if (c >= 32 && c < 127)
+		return (1);
+	else
+		return (0);
+}

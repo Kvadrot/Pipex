@@ -1,32 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_tolower.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/04 18:16:16 by itykhono          #+#    #+#             */
-/*   Updated: 2024/05/05 21:54:54 by itykhono         ###   ########.fr       */
+/*   Created: 2024/03/07 14:08:31 by itykhono          #+#    #+#             */
+/*   Updated: 2024/03/07 14:43:29 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h" 
 
-# include <unistd.h>
-# include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <fcntl.h>
-
-
-# include "./lib_ft/libft.h"
-
-void	ft_print_err(int err_code);
-void	ft_print(char *str);
-void	jtest(void);
-
-int	ft_validate_cmd_syntax(char **argv);
-
-
-# endif
+int	ft_tolower(int c)
+{
+	if (ft_isalpha(c) == 0)
+		return (c);
+	else if (c >= 65 && c <= 90)
+		return (c += 32);
+	return (c);
+}

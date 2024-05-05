@@ -1,32 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/04 18:16:16 by itykhono          #+#    #+#             */
-/*   Updated: 2024/05/05 21:54:54 by itykhono         ###   ########.fr       */
+/*   Created: 2024/03/12 13:02:29 by itykhono          #+#    #+#             */
+/*   Updated: 2024/03/19 13:59:09 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-# include <unistd.h>
-# include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <fcntl.h>
+char	*ft_strdup(const char *s)
+{
+	char	*newstr;
+	char	*start;
 
-
-# include "./lib_ft/libft.h"
-
-void	ft_print_err(int err_code);
-void	ft_print(char *str);
-void	jtest(void);
-
-int	ft_validate_cmd_syntax(char **argv);
-
-
-# endif
+	newstr = (char *)malloc((ft_strlen(s) + 1) * sizeof(char));
+	if (!newstr)
+		return (NULL);
+	start = newstr;
+	while (*s)
+	{
+		*newstr++ = *s++;
+	}
+	*newstr = '\0';
+	return (start);
+}

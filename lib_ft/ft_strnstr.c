@@ -1,32 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/04 18:16:16 by itykhono          #+#    #+#             */
-/*   Updated: 2024/05/05 21:54:54 by itykhono         ###   ########.fr       */
+/*   Created: 2024/03/08 14:48:39 by itykhono          #+#    #+#             */
+/*   Updated: 2024/03/10 15:01:31 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-# include <unistd.h>
-# include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <fcntl.h>
+char	*ft_strnstr(const char *big, const char *little, size_t len)
+{
+	size_t	i;
 
-
-# include "./lib_ft/libft.h"
-
-void	ft_print_err(int err_code);
-void	ft_print(char *str);
-void	jtest(void);
-
-int	ft_validate_cmd_syntax(char **argv);
-
-
-# endif
+	if (*little == '\0')
+		return ((char *)big);
+	while (*big && len > 0)
+	{
+		if (*big == *little)
+		{
+			i = 0;
+			while (little[i] && big[i] && little[i] == big[i] && i < len)
+				i++;
+			if (little[i] == '\0')
+				return ((char *)big);
+		}
+		big++;
+		len--;
+	}
+	return (NULL);
+}
