@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 18:58:51 by itykhono          #+#    #+#             */
-/*   Updated: 2024/05/05 22:28:32 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/05/06 13:34:49 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ int	ft_validate_cmd_syntax(char **argv)
 		fd = open(argv[1], O_RDONLY);
 		if (fd == -1)
 		{
-			perror(strerror(errno));
-			// ft_print("%s: %s", strerror(errno), argv[1]);
+
+			ft_printf("%s: %s", strerror(errno), argv[1]);
 			return (-800);
 		}
 		close(fd);

@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:16 by itykhono          #+#    #+#             */
-/*   Updated: 2024/05/05 21:54:54 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/05/06 15:26:33 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@
 
 
 # include "./lib_ft/libft.h"
+# include "./lib_ft_printf/ft_printf.h"
 
 void	ft_print_err(int err_code);
-void	ft_print(char *str);
 void	jtest(void);
 
 int	ft_validate_cmd_syntax(char **argv);
