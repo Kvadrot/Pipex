@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:16 by itykhono          #+#    #+#             */
-/*   Updated: 2024/05/06 15:26:33 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/05/17 18:52:19 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@
 #include <fcntl.h>
 
 
+// # ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1
+
 # include "./lib_ft/libft.h"
 # include "./lib_ft_printf/ft_printf.h"
 
@@ -27,6 +30,6 @@ void	ft_print_err(int err_code);
 void	jtest(void);
 
 int	ft_validate_cmd_syntax(char **argv);
+char *readfile_till_the_end(int filefd, int *len);
 
-
-# endif
+#endif
