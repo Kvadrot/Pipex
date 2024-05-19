@@ -3,6 +3,7 @@ CC = gcc
 # Compiler flags
 # CFLAGS = -Wall -Wextra -Werror -I./lib_ft
 CFLAGS = -I./lib_ft -I./lib_ft_printf
+
 # Sources
 SRCS = support_funcs.c \
 	   print_errors.c \
