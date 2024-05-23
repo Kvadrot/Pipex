@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:16 by itykhono          #+#    #+#             */
-/*   Updated: 2024/05/19 19:15:13 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/05/23 14:51:50 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+#include <sys/types.h>
 #include <sys/stat.h> // For S_IRUSR and S_IWUSR
 
 
