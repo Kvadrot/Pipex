@@ -1,1 +1,2 @@
-
+      0       2      10
+Here is Bad file descriptor
