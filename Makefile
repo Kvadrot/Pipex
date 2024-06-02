@@ -2,13 +2,12 @@
 CC = gcc
 # Compiler flags
 # CFLAGS = -Wall -Wextra -Werror -I./lib_ft
-CFLAGS = -I./lib_ft -I./lib_ft_printf
+CFLAGS = -I./lib_ft -I./lib_ft_printf -I./get_next_line_final
+
+LDFLAGS = -L./lib_ft -lft -L./lib_ft_printf -lftprintf -L./get_next_line_final -l:gnl.a
 
 # Sources
-SRCS = support_funcs.c \
-	   print_errors.c \
-	   validating_funcs.c \
-	   pipex.c
+SRCS = pipex.c
 # Objects
 OBJS = $(SRCS:.c=.o)
 # Programm Name
@@ -17,9 +16,11 @@ NAME = pipex
 LIBFT = ./lib_ft/libft.a
 # ft_printf
 FTPRINTF = ./lib_ft_printf/libftprintf.a
+# get_next_line
+GNL = ./get_next_line_final/gnl.a
 
 # Main rule / Default
-all: $(LIBFT) $(FTPRINTF) $(NAME)
+all: $(LIBFT) $(FTPRINTF) $(GNL) $(NAME)
 
 # make lib_ft
 $(LIBFT):
@@ -29,20 +30,26 @@ $(LIBFT):
 $(FTPRINTF):
 	make -C lib_ft_printf
 
+# make GNL
+$(GNL):
+	make -C get_next_line_final
+
 # Compile files 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -L./lib_ft -lft -L./lib_ft_printf -lftprintf
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LDFLAGS)
 
 # Clean up obj files
 clean:
 	make -C lib_ft clean
 	make -C lib_ft_printf clean
+	make -C get_next_line_final clean
 	rm -f $(OBJS)
 
 #Full clena up
 fclean: clean
 	make -C lib_ft fclean
 	make -C lib_ft_printf fclean
+	make -C get_next_line_final fclean
 	rm -f $(NAME)
 
 # Rebuild

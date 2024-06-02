@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 12:21:02 by itykhono          #+#    #+#             */
-/*   Updated: 2024/04/11 14:27:55 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/02 13:04:24 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_put_chr(char ch)
 {
-	write(1, &ch, 1);
+	write(2, &ch, 1);
 	return (1);
 }
 
@@ -78,7 +78,7 @@ int	ft_printf(const char *format, ...)
 		}
 		else
 		{
-			write(1, &format[i], 1);
+			write(2, &format[i], 1);
 			sym_sum++;
 		}
 		i++;
