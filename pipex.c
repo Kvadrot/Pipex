@@ -6,22 +6,32 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:23 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/03 12:46:46 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/04 15:18:10 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "pipex.h"
 
-static void	ft_save_to_output_fd(char *filename, char *result) {
+static int	ft_save_to_output_fd(char *filename, char *result) {
 	int	output_fd;
+	int	len;
 
     output_fd = open(filename, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (output_fd < 0) {
 		ft_printf("%d", strerror(errno));
-        return;
+        return (-210);
     }
-	write(output_fd, result, ft_strlen(result));
+	if (!result)
+		len = 0;
+	else
+		len = ft_strlen(result);
+	if (write(output_fd, result, len) < 0);
+	{
+		ft_printf("%s", strerror(errno));
+		return(-211);
+	}
 	close(output_fd);
+	return (0);
 }
 
 static char	*read_input(int inputfd) {
@@ -30,6 +40,27 @@ static char	*read_input(int inputfd) {
 	result = get_next_line(inputfd);
 	close(inputfd);
 	return (result);
+}
+
+static int	read_input_and_write_into_pipe(int inputfd, int pipe_fd) {
+	char	*result;
+	int		len;
+
+	result = get_next_line(inputfd);
+	if (!result)
+		len = 0;
+	else
+		len = ft_strlen(result);
+	
+    if (write(pipe_fd, result, len) == -1)
+	{
+		ft_printf("%s", strerror(errno));
+		return (-202);
+	}
+	close(inputfd);
+	close(pipe_fd);
+	free(result);
+	return(0);
 }
 
 static void ft_close_all_pipes(int all_pipes[][2], int pipes_amount, int *exeption_pipe)
@@ -84,12 +115,10 @@ char *ft_exe_cmd(char **argvs, int infile_fd, int cmds) {
         return (NULL);
     }
 
-	char *input_str;
-	input_str = read_input(infile_fd);
-    write(pipes_fd[0][1], input_str, ft_strlen(input_str));
-    close(pipes_fd[0][1]); // Close the write end of the first pipe
-	free(input_str);
-
+	if (read_input_and_write_into_pipe(infile_fd, pipes_fd[0][1]) < 0)
+		return (NULL);
+	// ft_printf("infile contains: %d \n", input_str);
+    // write(pipes_fd[0][1], input_str, ft_strlen(input_str));
 	pid = 2;
 	while (cmd_index < cmds)
 	{
@@ -103,7 +132,6 @@ char *ft_exe_cmd(char **argvs, int infile_fd, int cmds) {
 			ft_printf("%s", strerror(errno));
 			return (NULL);	
 		}
-
 		if (pid == 0) {
 		// ONLY CHILD ACCESS
 			if (dup2(pipes_fd[cmd_index][0], STDIN_FILENO) < 0) {
@@ -149,7 +177,9 @@ int main(int argc, char **argv)
 {
 	int inputfd;
 	int	output_fd;
+	int return_status;
 
+	return_status = 0;
 	inputfd = open(argv[1], O_RDONLY);
 	if (inputfd < 0)
 	{
@@ -159,6 +189,8 @@ int main(int argc, char **argv)
 	}
 	int cmds = argc - 3;
 	char *tempRes = ft_exe_cmd(argv, inputfd, cmds);
-	ft_save_to_output_fd(argv[argc -1], tempRes);
+	if (ft_save_to_output_fd(argv[argc -1], tempRes) < 0)
+		return_status = 0;
 	free(tempRes);
+	return (return_status);
 }
