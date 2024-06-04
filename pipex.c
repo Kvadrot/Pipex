@@ -6,17 +6,20 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:23 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/04 15:18:10 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/04 15:57:08 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "pipex.h"
+#include "pipex.h"
 
-static int	ft_save_to_output_fd(char *filename, char *result) {
+static int	ft_save_to_output_fd(char *filename, char *result)
+{
 	int	output_fd;
 	int	len;
+	int	printed_sym;
 
-    output_fd = open(filename, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+	printed_sym = 0;
+	output_fd = open(filename, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (output_fd < 0) {
 		ft_printf("%d", strerror(errno));
         return (-210);
@@ -25,7 +28,8 @@ static int	ft_save_to_output_fd(char *filename, char *result) {
 		len = 0;
 	else
 		len = ft_strlen(result);
-	if (write(output_fd, result, len) < 0);
+	printed_sym = write(output_fd, result, len);
+	if (printed_sym == -1)
 	{
 		ft_printf("%s", strerror(errno));
 		return(-211);
@@ -107,18 +111,15 @@ char *ft_exe_cmd(char **argvs, int infile_fd, int cmds) {
     int pid;
     char *result_str;
 	int cmd_index;
+	char *path_cmd;
 
 	cmd_index = 0;
-    // Create all Pipes
     if (ft_create_pipes(cmds + 1, pipes_fd) == -242) {
         ft_printf("%s", strerror(errno));
         return (NULL);
     }
-
 	if (read_input_and_write_into_pipe(infile_fd, pipes_fd[0][1]) < 0)
 		return (NULL);
-	// ft_printf("infile contains: %d \n", input_str);
-    // write(pipes_fd[0][1], input_str, ft_strlen(input_str));
 	pid = 2;
 	while (cmd_index < cmds)
 	{
@@ -133,51 +134,44 @@ char *ft_exe_cmd(char **argvs, int infile_fd, int cmds) {
 			return (NULL);	
 		}
 		if (pid == 0) {
-		// ONLY CHILD ACCESS
 			if (dup2(pipes_fd[cmd_index][0], STDIN_FILENO) < 0) {
 				ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
 				ft_printf("dup2 failed for stdin in child: %s\n", strerror(errno));
 				return (NULL);
 			}
-			
 			if (dup2(pipes_fd[cmd_index + 1][1], STDOUT_FILENO) < 0) {
 				ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
 				ft_printf("dup2 failed for stdout in child: %s\n", strerror(errno));
 				return (NULL);
 			}
 			ft_close_all_pipes(pipes_fd, cmds + 1, &(pipes_fd[0][1]));
-			// Execute CMD
 			exe_arguments = ft_split(argvs[cmd_index + 2], ' '); //prog name + infile 
 			if (!exe_arguments) {
-				// ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
 				exit(-333);
 			}
-			char *path_cmd = ft_strjoin("/bin/", exe_arguments[0]);
-			if (!path_cmd) {
-				// ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
+			path_cmd = ft_strjoin("/bin/", exe_arguments[0]);
+			if (!path_cmd)
+			{
 				exit(-333);
 			}
-			// ft_printf("cmd_path = %s\n", path_cmd);
 			execve(path_cmd, exe_arguments, NULL);
 		}
 		cmd_index++;
-		// ft_printf("cmd_index = %d\n", cmd_index);
 	}
-    // Close all pipes in the parent process
 	ft_close_all_pipes(pipes_fd, cmds + 1, &(pipes_fd[cmds][0]));
-    // Wait for children to complete
-    wait(NULL);
-
+	wait(NULL);
 	result_str = read_input(pipes_fd[cmds][0]);
-    close(pipes_fd[cmds][0]);
-    return result_str;
+	close(pipes_fd[cmds][0]);
+	return (result_str);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	int inputfd;
-	int	output_fd;
-	int return_status;
+	int		inputfd;
+	int		output_fd;
+	int		return_status;
+	int		cmds;
+	char	*temp_res;
 
 	return_status = 0;
 	inputfd = open(argv[1], O_RDONLY);
@@ -185,12 +179,12 @@ int main(int argc, char **argv)
 	{
 		ft_printf("%s: %s", strerror(errno), argv[1]);
 		close(inputfd);
-		return (1);		
+		return (1);
 	}
-	int cmds = argc - 3;
-	char *tempRes = ft_exe_cmd(argv, inputfd, cmds);
-	if (ft_save_to_output_fd(argv[argc -1], tempRes) < 0)
+	cmds = argc - 3;
+	temp_res = ft_exe_cmd(argv, inputfd, cmds);
+	if (ft_save_to_output_fd(argv[argc -1], temp_res) < 0)
 		return_status = 0;
-	free(tempRes);
+	free(temp_res);
 	return (return_status);
 }
