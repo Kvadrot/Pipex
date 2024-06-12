@@ -1,52 +1,54 @@
 # Compiler
 CC = gcc
-# Compiler flags
-# CFLAGS = -Wall -Wextra -Werror -I./lib_ft
-CFLAGS = -I./lib_ft -I./lib_ft_printf -I./get_next_line_final
 
+# Compiler flags
+CFLAGS = -I./lib_ft -I./lib_ft_printf -I./get_next_line_final
 LDFLAGS = -L./lib_ft -lft -L./lib_ft_printf -lftprintf -L./get_next_line_final -l:gnl.a
 
-# Sources
+# Default sources
 SRCS = pipex.c
-# Objects
 OBJS = $(SRCS:.c=.o)
-# Programm Name
+
+# Bonus sources
+SRCS_BONUS = pipex_bonus.c
+OBJS_BONUS = $(SRCS_BONUS:.c=.o)
+
+# Program Name
 NAME = pipex
+BONUS_NAME = pipex_bonus
+
 # Libft src
 LIBFT = ./lib_ft/libft.a
+
 # ft_printf
 FTPRINTF = ./lib_ft_printf/libftprintf.a
+
 # get_next_line
 GNL = ./get_next_line_final/gnl.a
 
-# Main rule / Default
-all: $(NAME)
-$(NAME):	$(LIBFT) $(FTPRINTF) $(GNL) $(NAME)
+# Default rule
+all: $(LIBFT) $(FTPRINTF) $(GNL) $(NAME)
 
-#Bonus PART
-SRCS_BONUS	= ./pipex_bonus.c
-OBJS_BONUS	= ${SRCS_BONUS:.c=.o}
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LDFLAGS)
 
-#Bonus rule
-bonus: $(NAME) 
-$(NAME):	$(LIBFT) $(FTPRINTF) $(GNL) $(NAME)
+# Bonus rule
+bonus: $(LIBFT) $(FTPRINTF) $(GNL) $(BONUS_NAME)
 
+$(BONUS_NAME): $(OBJS_BONUS)
+	$(CC) $(CFLAGS) $(OBJS_BONUS) -o $(BONUS_NAME) $(LDFLAGS)
 
-# make lib_ft
+# Make lib_ft
 $(LIBFT):
 	make -C lib_ft
 
-# make lib_ft_printf
+# Make lib_ft_printf
 $(FTPRINTF):
 	make -C lib_ft_printf
 
-# make GNL
+# Make GNL
 $(GNL):
 	make -C get_next_line_final
-
-# Compile files 
-$(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LDFLAGS)
 
 # Clean up obj files
 clean:
@@ -55,16 +57,15 @@ clean:
 	make -C get_next_line_final clean
 	rm -f $(OBJS) $(OBJS_BONUS)
 
-#Full clena up
+# Full clean up
 fclean: clean
 	make -C lib_ft fclean
 	make -C lib_ft_printf fclean
 	make -C get_next_line_final fclean
-	rm -f $(NAME)
+	rm -f $(NAME) $(BONUS_NAME)
 
 # Rebuild
-re:
-	fclean all
+re: fclean all
 
 # Ensure that 'all', 'clean', 'fclean', 're', and 'bonus' are not interpreted as file names
-.PHONE: all clean fclean re
+.PHONY: all clean fclean re bonus
