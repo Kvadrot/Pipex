@@ -38,3 +38,24 @@ int	ft_save_to_output_fd(char *filename, char *result)
 	close(output_fd);
 	return (0);
 }
+
+int	read_input_and_write_into_pipe(int inputfd, int pipe_fd) {
+	char	*result;
+	int		len;
+
+	result = get_next_line(inputfd);
+	if (!result)
+		len = 0;
+	else
+		len = ft_strlen(result);
+	
+    if (write(pipe_fd, result, len) == -1)
+	{
+		ft_printf("%s", strerror(errno));
+		return (-202);
+	}
+	close(inputfd);
+	close(pipe_fd);
+	free(result);
+	return(0);
+}
