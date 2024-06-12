@@ -6,11 +6,11 @@ CFLAGS = -I./lib_ft -I./lib_ft_printf -I./get_next_line_final
 LDFLAGS = -L./lib_ft -lft -L./lib_ft_printf -lftprintf -L./get_next_line_final -l:gnl.a
 
 # Default sources
-SRCS = pipex.c
+SRCS = pipex.c utilities.c
 OBJS = $(SRCS:.c=.o)
 
 # Bonus sources
-SRCS_BONUS = pipex_bonus.c
+SRCS_BONUS = pipex_bonus.c utilities.c
 OBJS_BONUS = $(SRCS_BONUS:.c=.o)
 
 # Program Name

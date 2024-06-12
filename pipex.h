@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:16 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/12 15:31:01 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/12 16:23:34 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,6 @@
 # include "./lib_ft_printf/ft_printf.h"
 # include "./get_next_line_final/get_next_line.h" 
 
-char *readfile_till_the_end(int filefd, int *len);
+int	ft_save_to_output_fd(char *filename, char *result);
 
 #endif

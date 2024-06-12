@@ -6,37 +6,11 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:23 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/06 13:27:20 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/12 16:25:43 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-static int	ft_save_to_output_fd(char *filename, char *result)
-{
-	int	output_fd;
-	int	len;
-	int	printed_sym;
-
-	printed_sym = 0;
-	output_fd = open(filename, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-    if (output_fd < 0) {
-		ft_printf("%d", strerror(errno));
-        return (-210);
-    }
-	if (!result)
-		len = 0;
-	else
-		len = ft_strlen(result);
-	printed_sym = write(output_fd, result, len);
-	if (printed_sym == -1)
-	{
-		ft_printf("%s", strerror(errno));
-		return(-211);
-	}
-	close(output_fd);
-	return (0);
-}
 
 static char	*read_input(int inputfd) {
 	char	*result;
