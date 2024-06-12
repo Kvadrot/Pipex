@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:23 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/12 18:05:52 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/12 18:51:18 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,7 @@ char	*ft_exe_cmd(char **argvs, int infile_fd, int cmds)
 {
 	char	**exe_arguments;
 	int		pipes_fd[cmds + 1][2];
-	int		child_fd;
 	int		pid;
-	char	*result_str;
 	int		cmd_index;
 	char	*path_cmd;
 
@@ -121,9 +119,10 @@ char	*ft_exe_cmd(char **argvs, int infile_fd, int cmds)
 	}
 	ft_close_all_pipes(pipes_fd, cmds + 1, &(pipes_fd[cmds][0]));
 	wait(NULL);
-	result_str = read_input(pipes_fd[cmds][0]);
+	path_cmd = read_input(pipes_fd[cmds][0]);
 	close(pipes_fd[cmds][0]);
-	return (result_str);
+	return (path_cmd);
+
 }
 
 int	main(int argc, char **argv)
