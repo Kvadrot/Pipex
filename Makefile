@@ -20,7 +20,17 @@ FTPRINTF = ./lib_ft_printf/libftprintf.a
 GNL = ./get_next_line_final/gnl.a
 
 # Main rule / Default
-all: $(LIBFT) $(FTPRINTF) $(GNL) $(NAME)
+all: $(NAME)
+$(NAME):	$(LIBFT) $(FTPRINTF) $(GNL) $(NAME)
+
+#Bonus PART
+SRCS_BONUS	= ./pipex_bonus.c
+OBJS_BONUS	= ${SRCS_BONUS:.c=.o}
+
+#Bonus rule
+bonus: $(NAME) 
+$(NAME):	$(LIBFT) $(FTPRINTF) $(GNL) $(NAME)
+
 
 # make lib_ft
 $(LIBFT):
@@ -43,7 +53,7 @@ clean:
 	make -C lib_ft clean
 	make -C lib_ft_printf clean
 	make -C get_next_line_final clean
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(OBJS_BONUS)
 
 #Full clena up
 fclean: clean
