@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:23 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/12 18:51:18 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/13 18:58:21 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static char	*read_input(int inputfd)
 	return (result);
 }
 
-static void	ft_close_all_pipes(int all_pipes[][2], int pipe_num, int *exception)
+static void	ft_close_all_pipes(int **all_pipes, int pipe_num, int *exception)
 {
 	int	i;
 
@@ -40,7 +40,7 @@ static void	ft_close_all_pipes(int all_pipes[][2], int pipe_num, int *exception)
 	}
 }
 
-static int	ft_create_pipes(int pipe_amount, int created_pipes[][2])
+static int	ft_fill_pipes(int pipe_amount, int **created_pipes)
 {
 	int	i;
 
@@ -63,20 +63,58 @@ static int	ft_create_pipes(int pipe_amount, int created_pipes[][2])
 	return (200);
 }
 
+void	*ft_handle_error(int *all_pipes[2], int pipes_amount)
+{
+	ft_close_all_pipes(all_pipes, pipes_amount, NULL);
+	ft_printf("%s", strerror(errno));
+	return (NULL);
+}
+
+static int	**ft_craete_all_pipes(int pip_amount)
+{
+	int	**all_pipes;
+	int	i;
+	int	j;
+
+	all_pipes = (int **)malloc((pip_amount) * sizeof(int *));
+	if (!all_pipes)
+		return (NULL);
+	i = 0;
+	while (i < pip_amount)
+	{
+		all_pipes[i] = (int *)malloc(2 * sizeof(int));
+		if (all_pipes[i] == NULL)
+		{
+			perror("malloc failed");
+			j = 0;
+			while (j < i)
+			{
+				free(all_pipes[j]);
+				j++;
+			}
+			free(all_pipes);
+			exit(EXIT_FAILURE);
+		}
+		i++;
+	}
+	if (ft_fill_pipes(pip_amount, all_pipes) == -242)
+		return (ft_handle_error(all_pipes, pip_amount));
+	return (all_pipes);
+}
+
 char	*ft_exe_cmd(char **argvs, int infile_fd, int cmds)
 {
 	char	**exe_arguments;
-	int		pipes_fd[cmds + 1][2];
+	char	*path_cmd;
 	int		pid;
 	int		cmd_index;
-	char	*path_cmd;
+	int		**pipes_fd;
 
 	cmd_index = 0;
-	if (ft_create_pipes(cmds + 1, pipes_fd) == -242)
-	{
-		ft_printf("%s", strerror(errno));
+	pipes_fd = ft_craete_all_pipes(cmds + 1);
+	if (!pipes_fd)
 		return (NULL);
-	}
+
 	if (read_input_and_write_into_pipe(infile_fd, pipes_fd[0][1]) < 0)
 		return (NULL);
 	pid = 2;
@@ -122,7 +160,6 @@ char	*ft_exe_cmd(char **argvs, int infile_fd, int cmds)
 	path_cmd = read_input(pipes_fd[cmds][0]);
 	close(pipes_fd[cmds][0]);
 	return (path_cmd);
-
 }
 
 int	main(int argc, char **argv)
