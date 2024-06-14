@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:23 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/13 18:58:21 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/14 14:46:57 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ static void	ft_close_all_pipes(int **all_pipes, int pipe_num, int *exception)
 	i = 0;
 	while (i < pipe_num)
 	{
-		if (all_pipes[i][0] && all_pipes[i][0] != *exception)
-		{
+		if (!exception || all_pipes[i][0] != *exception)
+		{	
 			close(all_pipes[i][0]);
 		}
-		if (all_pipes[i][1] && all_pipes[i][1] != *exception)
+		if (!exception || all_pipes[i][1] != *exception)
 		{
 			close(all_pipes[i][1]);
 		}
@@ -82,7 +82,7 @@ static int	**ft_craete_all_pipes(int pip_amount)
 	i = 0;
 	while (i < pip_amount)
 	{
-		all_pipes[i] = (int *)malloc(2 * sizeof(int));
+		all_pipes[i] = (int *)ft_calloc(sizeof(int), 2);
 		if (all_pipes[i] == NULL)
 		{
 			perror("malloc failed");
@@ -114,7 +114,6 @@ char	*ft_exe_cmd(char **argvs, int infile_fd, int cmds)
 	pipes_fd = ft_craete_all_pipes(cmds + 1);
 	if (!pipes_fd)
 		return (NULL);
-
 	if (read_input_and_write_into_pipe(infile_fd, pipes_fd[0][1]) < 0)
 		return (NULL);
 	pid = 2;
@@ -142,16 +141,20 @@ char	*ft_exe_cmd(char **argvs, int infile_fd, int cmds)
 				ft_printf("dup2 failed for stdout in child: %s\n", strerror(errno));
 				return (NULL);
 			}
-			ft_close_all_pipes(pipes_fd, cmds + 1, &(pipes_fd[0][1]));
+			ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
 			exe_arguments = ft_split(argvs[cmd_index + 2], ' ');
 			if (!exe_arguments)
 				exit (-333);
 			path_cmd = ft_strjoin("/bin/", exe_arguments[0]);
 			if (!path_cmd)
+				exit (-334);
+			if (execve(path_cmd, exe_arguments, NULL) == -1)
 			{
-				exit (-333);
+				ft_free_duble_array_char(exe_arguments);
+				ft_free_duble_array_int(pipes_fd, cmds + 1);
+				free(path_cmd);
+				exit(-335);
 			}
-			execve(path_cmd, exe_arguments, NULL);
 		}
 		cmd_index++;
 	}
@@ -159,6 +162,7 @@ char	*ft_exe_cmd(char **argvs, int infile_fd, int cmds)
 	wait(NULL);
 	path_cmd = read_input(pipes_fd[cmds][0]);
 	close(pipes_fd[cmds][0]);
+	ft_free_duble_array_int(pipes_fd, cmds + 1);
 	return (path_cmd);
 }
 

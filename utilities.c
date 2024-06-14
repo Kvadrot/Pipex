@@ -59,3 +59,38 @@ int	read_input_and_write_into_pipe(int inputfd, int pipe_fd) {
 	free(result);
 	return(0);
 }
+
+
+void	ft_free_duble_array_int(int **arr, int arr_num)
+{
+	int	arr_ind;
+
+	arr_ind = 0;
+	if (arr == NULL) {
+        return;
+    }
+	while (arr_ind < arr_num)
+	{
+		if (arr[arr_ind] != NULL)
+			free(arr[arr_ind]);
+		arr_ind++;
+	}
+	free(arr);
+}
+
+void	ft_free_duble_array_char(char **arr)
+{
+	int	arr_ind;
+
+	arr_ind = 0;
+	if (arr == NULL) {
+        return;
+    }
+	while (arr[arr_ind] != NULL)
+	{
+		if (arr[arr_ind] != NULL)
+			free(arr[arr_ind]);
+		arr_ind++;
+	}
+	free(arr);
+}
