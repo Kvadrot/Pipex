@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:23 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/14 14:46:57 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/14 15:52:00 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,21 +133,30 @@ char	*ft_exe_cmd(char **argvs, int infile_fd, int cmds)
 			{
 				ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
 				ft_printf("dup2 failed for stdin in child: %s\n", strerror(errno));
+				ft_free_duble_array_int(pipes_fd, cmds + 1);
 				return (NULL);
 			}
 			if (dup2(pipes_fd[cmd_index + 1][1], STDOUT_FILENO) < 0)
 			{
 				ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
+				ft_free_duble_array_int(pipes_fd, cmds + 1);
 				ft_printf("dup2 failed for stdout in child: %s\n", strerror(errno));
 				return (NULL);
 			}
 			ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
 			exe_arguments = ft_split(argvs[cmd_index + 2], ' ');
 			if (!exe_arguments)
+			{
+				ft_free_duble_array_int(pipes_fd, cmds + 1);
 				exit (-333);
+			}
 			path_cmd = ft_strjoin("/bin/", exe_arguments[0]);
 			if (!path_cmd)
+			{
+				ft_free_duble_array_char(exe_arguments);
+				ft_free_duble_array_int(pipes_fd, cmds + 1);
 				exit (-334);
+			}
 			if (execve(path_cmd, exe_arguments, NULL) == -1)
 			{
 				ft_free_duble_array_char(exe_arguments);
