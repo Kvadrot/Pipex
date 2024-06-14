@@ -6,20 +6,11 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:23 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/14 18:50:37 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/14 19:12:46 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-static char	*ft_read_fd(int inputfd)
-{
-	char	*result;
-
-	result = get_next_line(inputfd);
-	close(inputfd);
-	return (result);
-}
 
 static void	ft_close_all_pipes(int **all_pipes, int pipe_num, int *exception)
 {
@@ -77,7 +68,7 @@ static int	**ft_craete_all_pipes(int pip_amount)
 		all_pipes[i] = (int *)ft_calloc(sizeof(int), 2);
 		if (all_pipes[i] == NULL)
 		{
-			perror("malloc failed");
+			ft_printf("malloc failed\n");
 			ft_free_duble_array_int(all_pipes, i);
 			exit(EXIT_FAILURE);
 		}
@@ -87,25 +78,25 @@ static int	**ft_craete_all_pipes(int pip_amount)
 	return (all_pipes);
 }
 
-static	char	**ft_prepare_arguments(int **pipes_fd, int cmd_index, int cmds, char **argvs)
+static	char	**get_args(int **pipes_fd, int cmd_index, int cmds, char **argv)
 {
 	char	**exe_arguments;
 	char	*path_cmd;
 
 	if (dup2(pipes_fd[cmd_index][0], STDIN_FILENO) < 0)
 	{
-		ft_printf("dup2 failed for stdin in child: %s\n", strerror(errno));
+		ft_printf("%s\n", strerror(errno));
 		ft_free_duble_array_int(pipes_fd, cmds + 1);
 		exit(2);
 	}
 	if (dup2(pipes_fd[cmd_index + 1][1], STDOUT_FILENO) < 0)
 	{
 		ft_free_duble_array_int(pipes_fd, cmds + 1);
-		ft_printf("dup2 failed for stdout in child: %s\n", strerror(errno));
+		ft_printf("%s\n", strerror(errno));
 		exit(3);
 	}
 	ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
-	exe_arguments = ft_split(argvs[cmd_index + 2], ' ');
+	exe_arguments = ft_split(argv[cmd_index + 2], ' ');
 	if (!exe_arguments)
 	{
 		ft_free_duble_array_int(pipes_fd, cmds + 1);
@@ -114,19 +105,20 @@ static	char	**ft_prepare_arguments(int **pipes_fd, int cmd_index, int cmds, char
 	return (exe_arguments);
 }
 
-static void	ft_execute(char *path_cmd, char **exe_arguments, int cmds, int **pipes_fd)
+static void	ft_execute(char *path, char **exe_argument, int cmds, int **pipes)
 {
-	if (!path_cmd)
+	if (!path)
 	{
-		ft_free_duble_array_char(exe_arguments);
-		ft_free_duble_array_int(pipes_fd, cmds + 1);
+		ft_free_duble_array_char(exe_argument);
+		ft_free_duble_array_int(pipes, cmds + 1);
 		exit(5);
 	}
-	if (execve(path_cmd, exe_arguments, NULL) == -1)
+	if (execve(path, exe_argument, NULL) == -1)
 	{
-		ft_free_duble_array_char(exe_arguments);
-		ft_free_duble_array_int(pipes_fd, cmds + 1);
-		free(path_cmd);
+		ft_free_duble_array_char(exe_argument);
+		ft_free_duble_array_int(pipes, cmds + 1);
+		free(path);
+		ft_printf("%s\n", strerror(errno));
 		exit(6);
 	}
 }
@@ -150,7 +142,7 @@ void	process_commnads(int pid, int **pipes_fd, int cmds, char **argvs)
 		}
 		if (pid == 0)
 		{
-			exe_arguments = ft_prepare_arguments(pipes_fd, cmd_index, cmds, argvs);
+			exe_arguments = get_args(pipes_fd, cmd_index, cmds, argvs);
 			path_cmd = ft_strjoin("/bin/", exe_arguments[0]);
 			ft_execute(path_cmd, exe_arguments, cmds, pipes_fd);
 		}
@@ -186,7 +178,6 @@ char	*ft_exe_cmd(char **argvs, int infile_fd, int cmds)
 int	main(int argc, char **argv)
 {
 	int		inputfd;
-	int		output_fd;
 	int		return_status;
 	int		cmds;
 	char	*temp_res;
