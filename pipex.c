@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:23 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/14 15:52:00 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:05:31 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	ft_close_all_pipes(int **all_pipes, int pipe_num, int *exception)
 	while (i < pipe_num)
 	{
 		if (!exception || all_pipes[i][0] != *exception)
-		{	
+		{
 			close(all_pipes[i][0]);
 		}
 		if (!exception || all_pipes[i][1] != *exception)
@@ -86,13 +86,7 @@ static int	**ft_craete_all_pipes(int pip_amount)
 		if (all_pipes[i] == NULL)
 		{
 			perror("malloc failed");
-			j = 0;
-			while (j < i)
-			{
-				free(all_pipes[j]);
-				j++;
-			}
-			free(all_pipes);
+			ft_free_duble_array_int(all_pipes, i);
 			exit(EXIT_FAILURE);
 		}
 		i++;
