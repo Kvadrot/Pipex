@@ -6,13 +6,13 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:23 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/14 16:05:31 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/14 18:50:37 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static char	*read_input(int inputfd)
+static char	*ft_read_fd(int inputfd)
 {
 	char	*result;
 
@@ -40,7 +40,7 @@ static void	ft_close_all_pipes(int **all_pipes, int pipe_num, int *exception)
 	}
 }
 
-static int	ft_fill_pipes(int pipe_amount, int **created_pipes)
+static void	ft_fill_pipes(int pipe_amount, int **created_pipes)
 {
 	int	i;
 
@@ -56,18 +56,10 @@ static int	ft_fill_pipes(int pipe_amount, int **created_pipes)
 				i--;
 			}
 			ft_printf("%s", strerror(errno));
-			return (-242);
+			exit(20);
 		}
 		i++;
 	}
-	return (200);
-}
-
-void	*ft_handle_error(int *all_pipes[2], int pipes_amount)
-{
-	ft_close_all_pipes(all_pipes, pipes_amount, NULL);
-	ft_printf("%s", strerror(errno));
-	return (NULL);
 }
 
 static int	**ft_craete_all_pipes(int pip_amount)
@@ -91,79 +83,101 @@ static int	**ft_craete_all_pipes(int pip_amount)
 		}
 		i++;
 	}
-	if (ft_fill_pipes(pip_amount, all_pipes) == -242)
-		return (ft_handle_error(all_pipes, pip_amount));
+	ft_fill_pipes(pip_amount, all_pipes);
 	return (all_pipes);
 }
 
-char	*ft_exe_cmd(char **argvs, int infile_fd, int cmds)
+static	char	**ft_prepare_arguments(int **pipes_fd, int cmd_index, int cmds, char **argvs)
 {
 	char	**exe_arguments;
 	char	*path_cmd;
-	int		pid;
+
+	if (dup2(pipes_fd[cmd_index][0], STDIN_FILENO) < 0)
+	{
+		ft_printf("dup2 failed for stdin in child: %s\n", strerror(errno));
+		ft_free_duble_array_int(pipes_fd, cmds + 1);
+		exit(2);
+	}
+	if (dup2(pipes_fd[cmd_index + 1][1], STDOUT_FILENO) < 0)
+	{
+		ft_free_duble_array_int(pipes_fd, cmds + 1);
+		ft_printf("dup2 failed for stdout in child: %s\n", strerror(errno));
+		exit(3);
+	}
+	ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
+	exe_arguments = ft_split(argvs[cmd_index + 2], ' ');
+	if (!exe_arguments)
+	{
+		ft_free_duble_array_int(pipes_fd, cmds + 1);
+		exit(4);
+	}
+	return (exe_arguments);
+}
+
+static void	ft_execute(char *path_cmd, char **exe_arguments, int cmds, int **pipes_fd)
+{
+	if (!path_cmd)
+	{
+		ft_free_duble_array_char(exe_arguments);
+		ft_free_duble_array_int(pipes_fd, cmds + 1);
+		exit(5);
+	}
+	if (execve(path_cmd, exe_arguments, NULL) == -1)
+	{
+		ft_free_duble_array_char(exe_arguments);
+		ft_free_duble_array_int(pipes_fd, cmds + 1);
+		free(path_cmd);
+		exit(6);
+	}
+}
+
+void	process_commnads(int pid, int **pipes_fd, int cmds, char **argvs)
+{
+	char	**exe_arguments;
+	char	*path_cmd;
 	int		cmd_index;
-	int		**pipes_fd;
 
 	cmd_index = 0;
-	pipes_fd = ft_craete_all_pipes(cmds + 1);
-	if (!pipes_fd)
-		return (NULL);
-	if (read_input_and_write_into_pipe(infile_fd, pipes_fd[0][1]) < 0)
-		return (NULL);
-	pid = 2;
 	while (cmd_index < cmds)
 	{
 		if (pid > 0)
 			pid = fork();
 		if (pid < 0)
 		{
-			ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
 			ft_printf("%s", strerror(errno));
-			return (NULL);
+			ft_free_duble_array_int(pipes_fd, cmds + 1);
+			exit(1);
 		}
 		if (pid == 0)
 		{
-			if (dup2(pipes_fd[cmd_index][0], STDIN_FILENO) < 0)
-			{
-				ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
-				ft_printf("dup2 failed for stdin in child: %s\n", strerror(errno));
-				ft_free_duble_array_int(pipes_fd, cmds + 1);
-				return (NULL);
-			}
-			if (dup2(pipes_fd[cmd_index + 1][1], STDOUT_FILENO) < 0)
-			{
-				ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
-				ft_free_duble_array_int(pipes_fd, cmds + 1);
-				ft_printf("dup2 failed for stdout in child: %s\n", strerror(errno));
-				return (NULL);
-			}
-			ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
-			exe_arguments = ft_split(argvs[cmd_index + 2], ' ');
-			if (!exe_arguments)
-			{
-				ft_free_duble_array_int(pipes_fd, cmds + 1);
-				exit (-333);
-			}
+			exe_arguments = ft_prepare_arguments(pipes_fd, cmd_index, cmds, argvs);
 			path_cmd = ft_strjoin("/bin/", exe_arguments[0]);
-			if (!path_cmd)
-			{
-				ft_free_duble_array_char(exe_arguments);
-				ft_free_duble_array_int(pipes_fd, cmds + 1);
-				exit (-334);
-			}
-			if (execve(path_cmd, exe_arguments, NULL) == -1)
-			{
-				ft_free_duble_array_char(exe_arguments);
-				ft_free_duble_array_int(pipes_fd, cmds + 1);
-				free(path_cmd);
-				exit(-335);
-			}
+			ft_execute(path_cmd, exe_arguments, cmds, pipes_fd);
 		}
 		cmd_index++;
 	}
+}
+
+char	*ft_exe_cmd(char **argvs, int infile_fd, int cmds)
+{
+	char	*path_cmd;
+	int		pid;
+	int		**pipes_fd;
+
+	pipes_fd = ft_craete_all_pipes(cmds + 1);
+	if (!pipes_fd)
+		exit(1);
+	if (read_input_and_write_into_pipe(infile_fd, pipes_fd[0][1]) < 0)
+	{
+		ft_close_all_pipes(pipes_fd, cmds + 1, NULL);
+		ft_free_duble_array_int(pipes_fd, cmds + 1);
+		return (NULL);
+	}
+	pid = 2;
+	process_commnads(pid, pipes_fd, cmds, argvs);
 	ft_close_all_pipes(pipes_fd, cmds + 1, &(pipes_fd[cmds][0]));
 	wait(NULL);
-	path_cmd = read_input(pipes_fd[cmds][0]);
+	path_cmd = ft_read_fd(pipes_fd[cmds][0]);
 	close(pipes_fd[cmds][0]);
 	ft_free_duble_array_int(pipes_fd, cmds + 1);
 	return (path_cmd);

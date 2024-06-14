@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:16 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/14 14:38:45 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/14 18:51:28 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,6 @@ int		ft_save_to_output_fd(char *filename, char *result);
 int		read_input_and_write_into_pipe(int inputfd, int pipe_fd);
 void	ft_free_duble_array_char(char **arr);
 void	ft_free_duble_array_int(int **arr, int arr_num);
+char	*ft_read_fd(int inputfd);
 
 #endif

@@ -94,3 +94,12 @@ void	ft_free_duble_array_char(char **arr)
 	}
 	free(arr);
 }
+
+char	*ft_read_fd(int inputfd)
+{
+	char	*result;
+
+	result = get_next_line(inputfd);
+	close(inputfd);
+	return (result);
+}
