@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:23 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/14 19:12:46 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/14 19:15:22 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,7 @@ int	main(int argc, char **argv)
 	int		cmds;
 	char	*temp_res;
 
-	return_status = 0;
+	return_status = 1;
 	inputfd = open(argv[1], O_RDONLY);
 	if (inputfd < 0)
 	{

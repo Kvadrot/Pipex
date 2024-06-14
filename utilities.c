@@ -1,14 +1,14 @@
-// /* ************************************************************************** */
-// /*                                                                            */
-// /*                                                        :::      ::::::::   */
-// /*   utilities.c                                        :+:      :+:    :+:   */
-// /*                                                    +:+ +:+         +:+     */
-// /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
-// /*                                                +#+#+#+#+#+   +#+           */
-// /*   Created: 2024/05/09 13:48:24 by itykhono          #+#    #+#             */
-// /*   Updated: 2024/05/17 18:47:54 by itykhono         ###   ########.fr       */
-// /*                                                                            */
-// /* ************************************************************************** */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utilities.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/14 19:21:09 by itykhono          #+#    #+#             */
+/*   Updated: 2024/06/14 19:22:29 by itykhono         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "pipex.h"
 #include "pipex_bonus.h"
@@ -20,11 +20,13 @@ int	ft_save_to_output_fd(char *filename, char *result)
 	int	printed_sym;
 
 	printed_sym = 0;
-	output_fd = open(filename, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-    if (output_fd < 0) {
+	output_fd = open(filename, O_RDWR | O_CREAT
+			| O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+	if (output_fd < 0)
+	{
 		ft_printf("%d", strerror(errno));
-        return (-210);
-    }
+		return (-210);
+	}
 	if (!result)
 		len = 0;
 	else
@@ -33,13 +35,14 @@ int	ft_save_to_output_fd(char *filename, char *result)
 	if (printed_sym == -1)
 	{
 		ft_printf("%s", strerror(errno));
-		return(-211);
+		return (-211);
 	}
 	close(output_fd);
 	return (0);
 }
 
-int	read_input_and_write_into_pipe(int inputfd, int pipe_fd) {
+int	read_input_and_write_into_pipe(int inputfd, int pipe_fd)
+{
 	char	*result;
 	int		len;
 
@@ -48,8 +51,7 @@ int	read_input_and_write_into_pipe(int inputfd, int pipe_fd) {
 		len = 0;
 	else
 		len = ft_strlen(result);
-	
-    if (write(pipe_fd, result, len) == -1)
+	if (write(pipe_fd, result, len) == -1)
 	{
 		ft_printf("%s", strerror(errno));
 		return (-202);
@@ -57,18 +59,16 @@ int	read_input_and_write_into_pipe(int inputfd, int pipe_fd) {
 	close(inputfd);
 	close(pipe_fd);
 	free(result);
-	return(0);
+	return (0);
 }
-
 
 void	ft_free_duble_array_int(int **arr, int arr_num)
 {
 	int	arr_ind;
 
 	arr_ind = 0;
-	if (arr == NULL) {
-        return;
-    }
+	if (arr == NULL)
+		return ;
 	while (arr_ind < arr_num)
 	{
 		if (arr[arr_ind] != NULL)
@@ -83,9 +83,8 @@ void	ft_free_duble_array_char(char **arr)
 	int	arr_ind;
 
 	arr_ind = 0;
-	if (arr == NULL) {
-        return;
-    }
+	if (arr == NULL)
+		return ;
 	while (arr[arr_ind] != NULL)
 	{
 		if (arr[arr_ind] != NULL)
