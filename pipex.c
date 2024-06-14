@@ -6,77 +6,77 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:23 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/14 19:15:22 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/14 19:36:26 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static void	ft_close_all_pipes(int **all_pipes, int pipe_num, int *exception)
-{
-	int	i;
+// static void	ft_close_all_pipes(int **all_pipes, int pipe_num, int *exception)
+// {
+// 	int	i;
 
-	i = 0;
-	while (i < pipe_num)
-	{
-		if (!exception || all_pipes[i][0] != *exception)
-		{
-			close(all_pipes[i][0]);
-		}
-		if (!exception || all_pipes[i][1] != *exception)
-		{
-			close(all_pipes[i][1]);
-		}
-		i++;
-	}
-}
+// 	i = 0;
+// 	while (i < pipe_num)
+// 	{
+// 		if (!exception || all_pipes[i][0] != *exception)
+// 		{
+// 			close(all_pipes[i][0]);
+// 		}
+// 		if (!exception || all_pipes[i][1] != *exception)
+// 		{
+// 			close(all_pipes[i][1]);
+// 		}
+// 		i++;
+// 	}
+// }
 
-static void	ft_fill_pipes(int pipe_amount, int **created_pipes)
-{
-	int	i;
+// void	ft_fill_pipes(int pipe_amount, int **created_pipes)
+// {
+// 	int	i;
 
-	i = 0;
-	while (i < pipe_amount)
-	{
-		if (pipe(created_pipes[i]) == -1)
-		{
-			while (i >= 0)
-			{
-				close(created_pipes[i][1]);
-				close(created_pipes[i][0]);
-				i--;
-			}
-			ft_printf("%s", strerror(errno));
-			exit(20);
-		}
-		i++;
-	}
-}
+// 	i = 0;
+// 	while (i < pipe_amount)
+// 	{
+// 		if (pipe(created_pipes[i]) == -1)
+// 		{
+// 			while (i >= 0)
+// 			{
+// 				close(created_pipes[i][1]);
+// 				close(created_pipes[i][0]);
+// 				i--;
+// 			}
+// 			ft_printf("%s", strerror(errno));
+// 			exit(20);
+// 		}
+// 		i++;
+// 	}
+// }
 
-static int	**ft_craete_all_pipes(int pip_amount)
-{
-	int	**all_pipes;
-	int	i;
-	int	j;
+// static int	**ft_craete_all_pipes(int pip_amount)
+// {
+// 	int	**all_pipes;
+// 	int	i;
+// 	int	j;
 
-	all_pipes = (int **)malloc((pip_amount) * sizeof(int *));
-	if (!all_pipes)
-		return (NULL);
-	i = 0;
-	while (i < pip_amount)
-	{
-		all_pipes[i] = (int *)ft_calloc(sizeof(int), 2);
-		if (all_pipes[i] == NULL)
-		{
-			ft_printf("malloc failed\n");
-			ft_free_duble_array_int(all_pipes, i);
-			exit(EXIT_FAILURE);
-		}
-		i++;
-	}
-	ft_fill_pipes(pip_amount, all_pipes);
-	return (all_pipes);
-}
+// 	all_pipes = (int **)malloc((pip_amount) * sizeof(int *));
+// 	if (!all_pipes)
+// 		return (NULL);
+// 	i = 0;
+// 	while (i < pip_amount)
+// 	{
+// 		all_pipes[i] = (int *)ft_calloc(sizeof(int), 2);
+// 		if (all_pipes[i] == NULL)
+// 		{
+// 			ft_printf("malloc failed\n");
+// 			ft_free_duble_array_int(all_pipes, i);
+// 			exit(EXIT_FAILURE);
+// 		}
+// 		i++;
+// 	}
+// 	ft_fill_pipes(pip_amount, all_pipes);
+// 	return (all_pipes);
+// }
 
 static	char	**get_args(int **pipes_fd, int cmd_index, int cmds, char **argv)
 {
