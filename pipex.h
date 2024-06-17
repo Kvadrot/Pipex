@@ -6,7 +6,7 @@
 /*   By: itykhono <itykhono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:16:16 by itykhono          #+#    #+#             */
-/*   Updated: 2024/06/14 19:41:45 by itykhono         ###   ########.fr       */
+/*   Updated: 2024/06/17 15:03:25 by itykhono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,15 @@
 
 # include <unistd.h>
 # include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <sys/stat.h> // For S_IRUSR and S_IWUSR
-
+# include <string.h>
+# include <errno.h>
+# include <fcntl.h>
+# include <sys/wait.h>
+# include <sys/types.h>
+# include <sys/stat.h>
 # include "./lib_ft/libft.h"
 # include "./lib_ft_printf/ft_printf.h"
-# include "./get_next_line_final/get_next_line.h" 
+# include "./get_next_line_final/get_next_line.h"
 
 int		**ft_craete_all_pipes(int pip_amount);
 int		ft_save_to_output_fd(char *filename, char *result);
